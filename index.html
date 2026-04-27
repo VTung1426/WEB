@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MangaVault</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1>🏮 MangaVault</h1>
+                <div class="header-actions">
+                    <button id="addMangaBtn" class="btn-primary">+ Thêm Truyện</button>
+                    <button id="statsBtn" class="btn-secondary">📊</button>
+                    <button id="exportBtn" class="btn-secondary">💾</button>
+                    <button id="importBtn" class="btn-secondary">📥</button>
+                </div>
+            </div>
+        </header>
+
+        <div class="main">
+            <!-- Sidebar -->
+            <aside class="sidebar">
+                <nav class="nav-menu">
+                    <h3>Thư Viện</h3>
+                    <ul>
+                        <li><a href="#" data-view="home" class="active">🏠 Trang Chủ</a></li>
+                        <li><a href="#" data-view="library">📚 Tất Cả Truyện <span class="count">(0)</span></a></li>
+                        <li><a href="#" data-view="favorites">❤️ Yêu Thích</a></li>
+                        <li><a href="#" data-view="reading">📖 Đang Đọc</a></li>
+                        <li><a href="#" data-view="completed">✅ Đã Đọc Xong</a></li>
+                    </ul>
+                </nav>
+
+                <nav class="nav-menu">
+                    <h3>Thể Loại</h3>
+                    <ul id="genreList"></ul>
+                </nav>
+
+                <nav class="nav-menu">
+                    <h3>Khác</h3>
+                    <ul>
+                        <li><a href="#" data-view="stats">📊 Thống Kê</a></li>
+                        <li><a href="#" data-view="export">💾 Xuất Dữ Liệu</a></li>
+                        <li><a href="#" data-view="import">📥 Nhập Dữ Liệu</a></li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="content">
+                <!-- Home View -->
+                <section id="home" class="view active">
+                    <h2>Chào Mừng Trở Lại</h2>
+                    
+                    <div class="section">
+                        <h3>⚡ Tiếp Tục Đọc</h3>
+                        <div id="continueReading" class="manga-grid"></div>
+                    </div>
+
+                    <div class="section">
+                        <h3>🆕 Mới Thêm</h3>
+                        <div class="section-header">
+                            <div id="newManga" class="manga-grid"></div>
+                        </div>
+                        <a href="#" class="view-all">Xem Tất Cả →</a>
+                    </div>
+
+                    <div class="section">
+                        <h3>❤️ Yêu Thích</h3>
+                        <div id="favorites-home" class="manga-grid"></div>
+                        <div id="noFavorites" class="empty-state">
+                            <p>💔 Chưa có truyện yêu thích</p>
+                            <small>Nhấn ❤️ trên truyện để thêm vào đây</small>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Library View -->
+                <section id="library" class="view">
+                    <h2>Thư Viện</h2>
+                    <div class="library-controls">
+                        <div class="sort-options">
+                            <button class="sort-btn active" data-sort="date">Mới Thêm</button>
+                            <button class="sort-btn" data-sort="name">Tên A-Z</button>
+                            <button class="sort-btn" data-sort="chapters">Số Chương</button>
+                            <button class="sort-btn" data-sort="rating">Đánh Giá</button>
+                        </div>
+                        <div class="filter-options">
+                            <button class="filter-btn active" data-filter="all">Tất Cả</button>
+                            <button class="filter-btn" data-filter="ongoing">Đang Ra</button>
+                            <button class="filter-btn" data-filter="completed">Hoàn Thành</button>
+                            <button class="filter-btn" data-filter="paused">Tạm Ngưng</button>
+                            <button class="filter-btn" data-filter="manga">Manga</button>
+                            <button class="filter-btn" data-filter="manhwa">Manhwa</button>
+                            <button class="filter-btn" data-filter="manhua">Manhua</button>
+                        </div>
+                    </div>
+                    <div id="libraryContent" class="manga-grid"></div>
+                    <div id="emptyLibrary" class="empty-state">
+                        <p>📭 Thư Viện Trống</p>
+                        <p>Thêm truyện đầu tiên của bạn ngay!</p>
+                        <button id="addFirstManga" class="btn-primary">+ Thêm Truyện</button>
+                    </div>
+                </section>
+
+                <!-- Favorites View -->
+                <section id="favorites" class="view">
+                    <h2>❤️ Yêu Thích</h2>
+                    <div id="favoritesContent" class="manga-grid"></div>
+                    <div id="emptyFavorites" class="empty-state">
+                        <p>💔 Chưa có truyện yêu thích</p>
+                    </div>
+                </section>
+
+                <!-- Reading View -->
+                <section id="reading" class="view">
+                    <h2>📖 Đang Đọc</h2>
+                    <div id="readingContent" class="manga-grid"></div>
+                    <div id="emptyReading" class="empty-state">
+                        <p>📖 Chưa đọc truyện nào</p>
+                    </div>
+                </section>
+
+                <!-- Completed View -->
+                <section id="completed" class="view">
+                    <h2>✅ Đã Đọc Xong</h2>
+                    <div id="completedContent" class="manga-grid"></div>
+                    <div id="emptyCompleted" class="empty-state">
+                        <p>✅ Chưa hoàn thành truyện nào</p>
+                    </div>
+                </section>
+
+                <!-- Manga Detail View -->
+                <section id="mangaDetail" class="view">
+                    <button id="backBtn" class="btn-back">← Quay Lại</button>
+                    <div id="mangaDetailContent"></div>
+                </section>
+
+                <!-- Stats View -->
+                <section id="stats" class="view">
+                    <h2>📊 Thống Kê</h2>
+                    <div id="statsContent"></div>
+                </section>
+
+                <!-- Reader View -->
+                <section id="reader" class="view">
+                    <div class="reader-header">
+                        <button id="readerBackBtn" class="btn-back">← Quay Lại</button>
+                        <div class="reader-info"></div>
+                    </div>
+                    <div class="reader-container">
+                        <div class="reader-content"></div>
+                    </div>
+                    <div class="reader-controls">
+                        <div class="view-mode">
+                            <button class="view-btn active" data-mode="vertical">Dọc</button>
+                            <button class="view-btn" data-mode="horizontal">Ngang</button>
+                            <button class="view-btn" data-mode="rtl">Phải→Trái</button>
+                        </div>
+                        <div class="navigation">
+                            <button id="prevBtn" class="nav-btn">‹ Trước</button>
+                            <span class="page-info"></span>
+                            <button id="nextBtn" class="nav-btn">Sau ›</button>
+                        </div>
+                    </div>
+                </section>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add Manga Modal -->
+    <div id="addMangaModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>✕ Thêm Truyện Mới</h3>
+                <button class="modal-close">✕</button>
+            </div>
+            <form id="addMangaForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tên Truyện *</label>
+                        <input type="text" id="mangaName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tên Khác</label>
+                        <input type="text" id="alternativeName">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tác Giả</label>
+                        <input type="text" id="author">
+                    </div>
+                    <div class="form-group">
+                        <label>Họa Sĩ</label>
+                        <input type="text" id="artist">
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Loại</label>
+                        <select id="type">
+                            <option>Manga (JP)</option>
+                            <option>Manhwa (KR)</option>
+                            <option>Manhua (CN)</option>
+                            <option>Khác</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Tình Trạng</label>
+                        <select id="status">
+                            <option>Đang Ra</option>
+                            <option>Hoàn Thành</option>
+                            <option>Tạm Ngưng</option>
+                            <option>Đã Hủy</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Mô Tả</label>
+                    <textarea id="description" rows="4"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Tags / Thể Loại</label>
+                    <div id="tagsList" class="tags-list"></div>
+                    <input type="text" id="tagInput" placeholder="Nhập tag và nhấn Enter">
+                    <small>Gợi ý: Action, Comedy, Drama, Fantasy, Horror, Mystery, Romance, School, Sci-Fi, Shounen, Shoujo, Seinen, Slice of Life, Sport, Supernatural, Thriller</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Ảnh Bìa</label>
+                    <div class="cover-upload">
+                        <input type="file" id="coverImage" accept="image/*">
+                        <div class="upload-placeholder">
+                            <p>🖼️</p>
+                            <p>Nhấn để chọn ảnh bìa<br>PNG, JPG, WEBP — tối đa 5MB</p>
+                            <img id="coverPreview" alt="">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelAddManga">Hủy</button>
+                    <button type="submit" class="btn-primary">💾 Lưu Truyện</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Chapter Modal -->
+    <div id="addChapterModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>✕ Thêm Chương Mới</h3>
+                <button class="modal-close">✕</button>
+            </div>
+            <form id="addChapterForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Số Chương *</label>
+                        <input type="number" id="chapterNumber" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tên Chương</label>
+                        <input type="text" id="chapterName">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Trang Truyện (Ảnh)</label>
+                    <div class="pages-upload">
+                        <input type="file" id="pageImages" accept="image/*" multiple>
+                        <div class="upload-placeholder">
+                            <p>📸</p>
+                            <p>Chọn các trang truyện (có thể chọn nhiều ảnh)<br>Sắp xếp thứ tự theo tên file</p>
+                        </div>
+                    </div>
+                    <div id="pagesList" class="pages-list"></div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" id="cancelAddChapter">Hủy</button>
+                    <button type="submit" class="btn-primary">💾 Lưu Chương</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content small">
+            <div class="modal-header">
+                <h3>⚠️ Xác Nhận</h3>
+            </div>
+            <p id="confirmMessage"></p>
+            <div class="form-actions">
+                <button type="button" class="btn-secondary" id="cancelConfirm">Hủy</button>
+                <button type="button" class="btn-primary" id="confirmBtn">Xác Nhận</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Spinner -->
+    <div id="loadingSpinner" class="loading-spinner">
+        <div class="spinner"></div>
+        <p id="loadingText">Đang xử lý...</p>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
