@@ -1,2234 +1,507 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MangaVault</title>
-    <style>
-        /* ===== CSS CODE ===== */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --primary-color: #FF6B6B;
-            --secondary-color: #4ECDC4;
-            --accent-color: #FFE66D;
-            --dark-bg: #2C3E50;
-            --light-bg: #ECF0F1;
-            --text-dark: #2C3E50;
-            --text-light: #7F8C8D;
-            --border-color: #BDC3C7;
-            --success-color: #27AE60;
-            --error-color: #E74C3C;
-            --warning-color: #F39C12;
-            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            --transition: all 0.3s ease;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--light-bg);
-            color: var(--text-dark);
-            line-height: 1.6;
-        }
-
-        .container {
-            width: 100%;
-            height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .header {
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            color: white;
-            padding: 1.5rem;
-            box-shadow: var(--shadow);
-            z-index: 100;
-        }
-
-        .header-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .header h1 {
-            font-size: 1.8rem;
-            font-weight: 600;
-        }
-
-        .header-actions {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .main {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
-        }
-
-        .sidebar {
-            width: 250px;
-            background: white;
-            border-right: 1px solid var(--border-color);
-            overflow-y: auto;
-            padding: 1.5rem 0;
-        }
-
-        .nav-menu {
-            margin-bottom: 2rem;
-            padding: 0 1rem;
-        }
-
-        .nav-menu h3 {
-            font-size: 0.9rem;
-            color: var(--text-light);
-            text-transform: uppercase;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-        }
-
-        .nav-menu ul {
-            list-style: none;
-        }
-
-        .nav-menu a {
-            display: block;
-            padding: 0.75rem 1rem;
-            color: var(--text-dark);
-            text-decoration: none;
-            border-radius: 0.5rem;
-            transition: var(--transition);
-            font-size: 0.95rem;
-        }
-
-        .nav-menu a:hover {
-            background: var(--light-bg);
-            color: var(--primary-color);
-        }
-
-        .nav-menu a.active {
-            background: var(--primary-color);
-            color: white;
-            font-weight: 600;
-        }
-
-        .count {
-            font-size: 0.8rem;
-            color: var(--text-light);
-        }
-
-        .content {
-            flex: 1;
-            overflow-y: auto;
-            padding: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .view {
-            display: none;
-            animation: fadeIn 0.3s ease;
-        }
-
-        .view.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .view h2 {
-            margin-bottom: 1.5rem;
-            color: var(--text-dark);
-        }
-
-        .section {
-            margin-bottom: 2.5rem;
-        }
-
-        .section h3 {
-            margin-bottom: 1rem;
-            color: var(--text-dark);
-        }
-
-        .manga-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .manga-card {
-            background: white;
-            border-radius: 0.5rem;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .manga-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .manga-card-image {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            background: var(--light-bg);
-        }
-
-        .manga-card-content {
-            padding: 1rem;
-        }
-
-        .manga-card-title {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            color: var(--text-dark);
-            font-size: 0.95rem;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .manga-card-meta {
-            font-size: 0.8rem;
-            color: var(--text-light);
-            margin-bottom: 0.5rem;
-        }
-
-        .manga-card-actions {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .manga-card-actions button {
-            flex: 1;
-            padding: 0.5rem;
-            border: none;
-            border-radius: 0.25rem;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .btn-favorite {
-            background: var(--light-bg);
-            color: var(--text-light);
-        }
-
-        .btn-favorite.active {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .btn-read {
-            background: var(--secondary-color);
-            color: white;
-        }
-
-        .library-controls {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 0.5rem;
-            margin-bottom: 1.5rem;
-            box-shadow: var(--shadow);
-        }
-
-        .sort-options,
-        .filter-options {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            margin-bottom: 1rem;
-        }
-
-        .sort-btn,
-        .filter-btn {
-            padding: 0.5rem 1rem;
-            border: 1px solid var(--border-color);
-            background: white;
-            border-radius: 0.25rem;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: var(--transition);
-        }
-
-        .sort-btn:hover,
-        .filter-btn:hover {
-            border-color: var(--primary-color);
-            color: var(--primary-color);
-        }
-
-        .sort-btn.active,
-        .filter-btn.active {
-            background: var(--primary-color);
-            color: white;
-            border-color: var(--primary-color);
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: var(--text-light);
-        }
-
-        .empty-state p:first-child {
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
-            color: var(--text-dark);
-        }
-
-        .btn-primary,
-        .btn-secondary,
-        .btn-back {
-            padding: 0.75rem 1.5rem;
-            border: none;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            font-size: 0.95rem;
-            font-weight: 600;
-            transition: var(--transition);
-        }
-
-        .btn-primary {
-            background: var(--primary-color);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #FF5252;
-            transform: translateY(-2px);
-        }
-
-        .btn-secondary {
-            background: var(--light-bg);
-            color: var(--text-dark);
-            border: 1px solid var(--border-color);
-        }
-
-        .btn-secondary:hover {
-            background: white;
-        }
-
-        .btn-back {
-            background: transparent;
-            color: var(--primary-color);
-            padding: 0.5rem 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            overflow-y: auto;
-        }
-
-        .modal.active {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background: white;
-            border-radius: 0.5rem;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-            max-width: 600px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1.5rem;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .modal-header h3 {
-            margin: 0;
-        }
-
-        .modal-close {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: var(--text-light);
-        }
-
-        form {
-            padding: 1.5rem;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-            margin-bottom: 1rem;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-group label {
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--text-dark);
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            padding: 0.75rem;
-            border: 1px solid var(--border-color);
-            border-radius: 0.5rem;
-            font-family: inherit;
-            font-size: 0.95rem;
-            transition: var(--transition);
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
-        }
-
-        .form-group small {
-            margin-top: 0.5rem;
-            color: var(--text-light);
-            font-size: 0.85rem;
-        }
-
-        .cover-upload,
-        .pages-upload {
-            position: relative;
-            cursor: pointer;
-        }
-
-        .cover-upload input[type="file"],
-        .pages-upload input[type="file"] {
-            display: none;
-        }
-
-        .upload-placeholder {
-            border: 2px dashed var(--border-color);
-            border-radius: 0.5rem;
-            padding: 2rem;
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition);
-            background: var(--light-bg);
-        }
-
-        .upload-placeholder:hover {
-            border-color: var(--primary-color);
-            background: rgba(255, 107, 107, 0.05);
-        }
-
-        .upload-placeholder p {
-            margin: 0.5rem 0;
-            color: var(--text-light);
-        }
-
-        .upload-placeholder p:first-child {
-            font-size: 2rem;
-            margin: 0 0 0.5rem 0;
-        }
-
-        #coverPreview {
-            max-width: 100%;
-            max-height: 200px;
-            margin-top: 1rem;
-            border-radius: 0.5rem;
-            display: none;
-        }
-
-        #coverPreview.show {
-            display: block;
-        }
-
-        .pages-list {
-            margin-top: 1rem;
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-            gap: 1rem;
-        }
-
-        .page-item {
-            position: relative;
-            overflow: hidden;
-            border-radius: 0.5rem;
-            background: var(--light-bg);
-        }
-
-        .page-item img {
-            width: 100%;
-            height: 120px;
-            object-fit: cover;
-        }
-
-        .page-item-number {
-            position: absolute;
-            top: 0.5rem;
-            left: 0.5rem;
-            background: var(--primary-color);
-            color: white;
-            padding: 0.25rem 0.75rem;
-            border-radius: 0.25rem;
-            font-size: 0.8rem;
-            font-weight: 600;
-        }
-
-        .page-item-remove {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            background: var(--error-color);
-            color: white;
-            border: none;
-            border-radius: 0.25rem;
-            padding: 0.25rem 0.5rem;
-            cursor: pointer;
-            font-size: 0.8rem;
-        }
-
-        .tags-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .tag {
-            background: var(--primary-color);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 1rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.85rem;
-        }
-
-        .tag button {
-            background: none;
-            border: none;
-            color: white;
-            cursor: pointer;
-            font-size: 1rem;
-            padding: 0;
-            line-height: 1;
-        }
-
-        #tagInput {
-            width: 100%;
-        }
-
-        .form-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-            margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid var(--border-color);
-        }
-
-        .loading-spinner {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .loading-spinner.active {
-            display: flex;
-        }
-
-        .spinner {
-            border: 4px solid rgba(255, 255, 255, 0.3);
-            border-top: 4px solid white;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        #loadingText {
-            color: white;
-            margin: 0;
-        }
-
-        .pages-upload.drag-over .upload-placeholder {
-            border-color: var(--primary-color);
-            background: rgba(255, 107, 107, 0.1);
-        }
-
-        @media (max-width: 768px) {
-            .main {
-                flex-direction: column;
-            }
-
-            .sidebar {
-                width: 100%;
-                max-height: 200px;
-                overflow-x: auto;
-            }
-
-            .content {
-                padding: 1.5rem;
-            }
-
-            .manga-grid {
-                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-                gap: 1rem;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manga Manager - Đơn Giản</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      color: white;
+      margin-bottom: 30px;
+    }
+
+    header h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    /* ===== FORM THÊM TRUYỆN ===== */
+    .add-manga-section {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .add-manga-section h2 {
+      margin-bottom: 20px;
+      color: #333;
+      border-bottom: 2px solid #667eea;
+      padding-bottom: 10px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    input[type="text"],
+    input[type="file"],
+    select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    input:focus,
+    select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 5px rgba(102, 126, 234, 0.5);
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .cover-preview {
+      max-width: 150px;
+      max-height: 200px;
+      border-radius: 5px;
+      margin-top: 10px;
+      border: 1px solid #ddd;
+    }
+
+    .btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: #667eea;
+      color: white;
+      width: 100%;
+    }
+
+    .btn-primary:hover {
+      background: #5568d3;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-danger {
+      background: #e74c3c;
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: #c0392b;
+    }
+
+    .btn-success {
+      background: #27ae60;
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: #229954;
+    }
+
+    .btn-warning {
+      background: #f39c12;
+      color: white;
+    }
+
+    .btn-warning:hover {
+      background: #d68910;
+    }
+
+    .btn-secondary {
+      background: #95a5a6;
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #7f8c8d;
+    }
+
+    /* ===== DANH SÁCH TRUYỆN ===== */
+    .manga-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+    }
+
+    .manga-card {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      transition: all 0.3s ease;
+    }
+
+    .manga-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    .manga-cover {
+      width: 100%;
+      height: 280px;
+      background: #f0f0f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 3em;
+      overflow: hidden;
+    }
+
+    .manga-cover img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .manga-info {
+      padding: 15px;
+    }
+
+    .manga-title {
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: 8px;
+      color: #333;
+    }
+
+    .manga-meta {
+      font-size: 0.9em;
+      color: #666;
+      margin-bottom: 3px;
+    }
+
+    .manga-chapters-count {
+      color: #667eea;
+      font-weight: bold;
+      margin-bottom: 12px;
+    }
+
+    .manga-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .manga-actions button {
+      padding: 8px;
+      font-size: 12px;
+    }
+
+    /* ===== MODAL THÊM CHƯƠNG ===== */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      width: 90%;
+      max-width: 500px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(-50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .modal-header {
+      border-bottom: 2px solid #667eea;
+      padding-bottom: 15px;
+      margin-bottom: 20px;
+    }
+
+    .modal-header h2 {
+      color: #333;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 20px;
+    }
+
+    /* ===== CHAPTER LIST ===== */
+    .chapters-section {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: none;
+    }
+
+    .chapters-section.active {
+      display: block;
+    }
+
+    .chapter-item {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      border-left: 4px solid #667eea;
+    }
+
+    .chapter-title {
+      font-weight: bold;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .chapter-images {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .chapter-image-thumb {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+    }
+
+    .chapter-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .chapter-actions button {
+      padding: 5px 10px;
+      font-size: 12px;
+    }
+
+    /* ===== EMPTY STATE ===== */
+    .empty-state {
+      background: white;
+      padding: 60px 20px;
+      border-radius: 10px;
+      text-align: center;
+      color: #999;
+    }
+
+    .empty-state h3 {
+      font-size: 1.5em;
+      margin-bottom: 10px;
+    }
+
+    /* ===== LOADING ===== */
+    .loading {
+      display: none;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .loading.active {
+      display: block;
+    }
+
+    .spinner {
+      display: inline-block;
+      width: 30px;
+      height: 30px;
+      border: 3px solid rgba(102, 126, 234, 0.3);
+      border-radius: 50%;
+      border-top-color: #667eea;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2em;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .manga-list {
+        grid-template-columns: 1fr;
+      }
+
+      .manga-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-content">
-                <h1>🏮 MangaVault</h1>
-                <div class="header-actions">
-                    <button id="addMangaBtn" class="btn-primary">+ Thêm Truyện</button>
-                    <button id="statsBtn" class="btn-secondary">📊</button>
-                    <button id="exportBtn" class="btn-secondary">💾</button>
-                    <button id="importBtn" class="btn-secondary">📥</button>
-                </div>
-            </div>
-        </header>
+  <div class="container">
+    <!-- HEADER -->
+    <header>
+      <h1>📚 Manga Manager</h1>
+      <p>Quản lý truyện tranh yêu thích của bạn</p>
+    </header>
 
-        <div class="main">
-            <!-- Sidebar -->
-            <aside class="sidebar">
-                <nav class="nav-menu">
-                    <h3>Thư Viện</h3>
-                    <ul>
-                        <li><a href="#" data-view="home" class="active">🏠 Trang Chủ</a></li>
-                        <li><a href="#" data-view="library">📚 Tất Cả Truyện <span class="count">(0)</span></a></li>
-                        <li><a href="#" data-view="favorites">❤️ Yêu Thích</a></li>
-                        <li><a href="#" data-view="reading">📖 Đang Đọc</a></li>
-                        <li><a href="#" data-view="completed">✅ Đã Đọc Xong</a></li>
-                    </ul>
-                </nav>
-
-                <nav class="nav-menu">
-                    <h3>Thể Loại</h3>
-                    <ul id="genreList"></ul>
-                </nav>
-
-                <nav class="nav-menu">
-                    <h3>Khác</h3>
-                    <ul>
-                        <li><a href="#" data-view="stats">📊 Thống Kê</a></li>
-                        <li><a href="#" data-view="export">💾 Xuất Dữ Liệu</a></li>
-                        <li><a href="#" data-view="import">📥 Nhập Dữ Liệu</a></li>
-                    </ul>
-                </nav>
-            </aside>
-
-            <!-- Main Content -->
-            <main class="content">
-                <!-- Home View -->
-                <section id="home" class="view active">
-                    <h2>Chào Mừng Trở Lại</h2>
-                    
-                    <div class="section">
-                        <h3>⚡ Tiếp Tục Đọc</h3>
-                        <div id="continueReading" class="manga-grid"></div>
-                    </div>
-
-                    <div class="section">
-                        <h3>🆕 Mới Thêm</h3>
-                        <div id="newManga" class="manga-grid"></div>
-                        <a href="#" class="view-all">Xem Tất Cả →</a>
-                    </div>
-
-                    <div class="section">
-                        <h3>❤️ Yêu Thích</h3>
-                        <div id="favorites-home" class="manga-grid"></div>
-                        <div id="noFavorites" class="empty-state">
-                            <p>💔 Chưa có truyện yêu thích</p>
-                            <small>Nhấn ❤️ trên truyện để thêm vào đây</small>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Library View -->
-                <section id="library" class="view">
-                    <h2>Thư Viện</h2>
-                    <div class="library-controls">
-                        <div class="sort-options">
-                            <button class="sort-btn active" data-sort="date">Mới Thêm</button>
-                            <button class="sort-btn" data-sort="name">Tên A-Z</button>
-                            <button class="sort-btn" data-sort="chapters">Số Chương</button>
-                            <button class="sort-btn" data-sort="rating">Đánh Giá</button>
-                        </div>
-                        <div class="filter-options">
-                            <button class="filter-btn active" data-filter="all">Tất Cả</button>
-                            <button class="filter-btn" data-filter="ongoing">Đang Ra</button>
-                            <button class="filter-btn" data-filter="completed">Hoàn Thành</button>
-                            <button class="filter-btn" data-filter="paused">Tạm Ngưng</button>
-                            <button class="filter-btn" data-filter="manga">Manga</button>
-                            <button class="filter-btn" data-filter="manhwa">Manhwa</button>
-                            <button class="filter-btn" data-filter="manhua">Manhua</button>
-                        </div>
-                    </div>
-                    <div id="libraryContent" class="manga-grid"></div>
-                    <div id="emptyLibrary" class="empty-state">
-                        <p>📭 Thư Viện Trống</p>
-                        <p>Thêm truyện đầu tiên của bạn ngay!</p>
-                        <button id="addFirstManga" class="btn-primary">+ Thêm Truyện</button>
-                    </div>
-                </section>
-
-                <!-- Favorites View -->
-                <section id="favorites" class="view">
-                    <h2>❤️ Yêu Thích</h2>
-                    <div id="favoritesContent" class="manga-grid"></div>
-                    <div id="emptyFavorites" class="empty-state">
-                        <p>💔 Chưa có truyện yêu thích</p>
-                    </div>
-                </section>
-
-                <!-- Reading View -->
-                <section id="reading" class="view">
-                    <h2>📖 Đang Đọc</h2>
-                    <div id="readingContent" class="manga-grid"></div>
-                    <div id="emptyReading" class="empty-state">
-                        <p>📖 Chưa đọc truyện nào</p>
-                    </div>
-                </section>
-
-                <!-- Completed View -->
-                <section id="completed" class="view">
-                    <h2>✅ Đã Đọc Xong</h2>
-                    <div id="completedContent" class="manga-grid"></div>
-                    <div id="emptyCompleted" class="empty-state">
-                        <p>✅ Chưa hoàn thành truyện nào</p>
-                    </div>
-                </section>
-
-                <!-- Manga Detail View -->
-                <section id="mangaDetail" class="view">
-                    <button id="backBtn" class="btn-back">← Quay Lại</button>
-                    <div id="mangaDetailContent"></div>
-                </section>
-
-                <!-- Stats View -->
-                <section id="stats" class="view">
-                    <h2>📊 Thống Kê</h2>
-                    <div id="statsContent"></div>
-                </section>
-
-                <!-- Reader View -->
-                <section id="reader" class="view">
-                    <div class="reader-header">
-                        <button id="readerBackBtn" class="btn-back">← Quay Lại</button>
-                        <div class="reader-info"></div>
-                    </div>
-                    <div class="reader-container">
-                        <div class="reader-content"></div>
-                    </div>
-                    <div class="reader-controls">
-                        <div class="view-mode">
-                            <button class="view-btn active" data-mode="vertical">Dọc</button>
-                            <button class="view-btn" data-mode="horizontal">Ngang</button>
-                            <button class="view-btn" data-mode="rtl">Phải→Trái</button>
-                        </div>
-                        <div class="navigation">
-                            <button id="prevBtn" class="nav-btn">‹ Trước</button>
-                            <span class="page-info"></span>
-                            <button id="nextBtn" class="nav-btn">Sau ›</button>
-                        </div>
-                    </div>
-                </section>
-            </main>
+    <!-- FORM THÊM TRUYỆN -->
+    <div class="add-manga-section">
+      <h2>➕ Thêm Truyện Mới</h2>
+      <form id="mangaForm">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="mangaName">Tên Truyện *</label>
+            <input type="text" id="mangaName" placeholder="VD: One Piece" required>
+          </div>
+          <div class="form-group">
+            <label for="mangaAuthor">Tác Giả</label>
+            <input type="text" id="mangaAuthor" placeholder="VD: Oda">
+          </div>
         </div>
-    </div>
 
-    <!-- Add Manga Modal -->
-    <div id="addMangaModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>✕ Thêm Truyện Mới</h3>
-                <button class="modal-close">✕</button>
-            </div>
-            <form id="addMangaForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Tên Truyện *</label>
-                        <input type="text" id="mangaName" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Tên Khác</label>
-                        <input type="text" id="alternativeName">
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Tác Giả</label>
-                        <input type="text" id="author">
-                    </div>
-                    <div class="form-group">
-                        <label>Họa Sĩ</label>
-                        <input type="text" id="artist">
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Loại</label>
-                        <select id="type">
-                            <option>Manga (JP)</option>
-                            <option>Manhwa (KR)</option>
-                            <option>Manhua (CN)</option>
-                            <option>Khác</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Tình Trạng</label>
-                        <select id="status">
-                            <option>Đang Ra</option>
-                            <option>Hoàn Thành</option>
-                            <option>Tạm Ngưng</option>
-                            <option>Đã Hủy</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Mô Tả</label>
-                    <textarea id="description" rows="4"></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label>Tags / Thể Loại</label>
-                    <div id="tagsList" class="tags-list"></div>
-                    <input type="text" id="tagInput" placeholder="Nhập tag và nhấn Enter">
-                    <small>Gợi ý: Action, Comedy, Drama, Fantasy, Horror, Mystery, Romance, School, Sci-Fi, Shounen, Shoujo, Seinen, Slice of Life, Sport, Supernatural, Thriller</small>
-                </div>
-
-                <div class="form-group">
-                    <label>Ảnh Bìa</label>
-                    <div class="cover-upload" id="coverUploadArea">
-                        <input type="file" id="coverImage" accept="image/*">
-                        <div class="upload-placeholder">
-                            <p>🖼️</p>
-                            <p>Nhấn để chọn ảnh bìa<br>PNG, JPG, WEBP — tối đa 5MB</p>
-                        </div>
-                        <img id="coverPreview" alt="">
-                    </div>
-                </div>
-
-                <div class="form-actions">
-                    <button type="button" class="btn-secondary" id="cancelAddManga">Hủy</button>
-                    <button type="submit" class="btn-primary">💾 Lưu Truyện</button>
-                </div>
-            </form>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="mangaStatus">Tình Trạng</label>
+            <select id="mangaStatus">
+              <option>Đang Ra</option>
+              <option>Hoàn Thành</option>
+              <option>Tạm Ngưng</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="mangaType">Loại</label>
+            <select id="mangaType">
+              <option>Manga</option>
+              <option>Manhwa</option>
+              <option>Manhua</option>
+            </select>
+          </div>
         </div>
-    </div>
 
-    <!-- Add Chapter Modal -->
-    <div id="addChapterModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>✕ Thêm Chương Mới</h3>
-                <button class="modal-close">✕</button>
-            </div>
-            <form id="addChapterForm">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Số Chương *</label>
-                        <input type="number" id="chapterNumber" required>
-                    </div>
-                    <div class="form-group">
-                        <label>Tên Chương</label>
-                        <input type="text" id="chapterName">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>Trang Truyện (Ảnh)</label>
-                    <div class="pages-upload" id="pagesUploadArea">
-                        <input type="file" id="pageImages" accept="image/*" multiple>
-                        <div class="upload-placeholder">
-                            <p>📸</p>
-                            <p>Nhấn để chọn ảnh truyện<br>Hoặc kéo thả các file ảnh vào đây<br>PNG, JPG, WEBP — tối đa 50MB/file</p>
-                        </div>
-                    </div>
-                    <div id="pagesList" class="pages-list"></div>
-                    <small>Ảnh sẽ được tải lên Cloudinary tự động</small>
-                </div>
-
-                <div class="form-actions">
-                    <button type="button" class="btn-secondary" id="cancelAddChapter">Hủy</button>
-                    <button type="submit" class="btn-primary">💾 Lưu Chương</button>
-                </div>
-            </form>
+        <div class="form-group">
+          <label for="mangaCover">Ảnh Bìa (Click để chọn từ máy tính)</label>
+          <input type="file" id="mangaCover" accept="image/*">
+          <img id="coverPreview" class="cover-preview" style="display:none;">
         </div>
+
+        <button type="submit" class="btn btn-primary">➕ Thêm Truyện</button>
+      </form>
     </div>
 
-    <!-- Confirm Modal -->
-    <div id="confirmModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>⚠️ Xác Nhận</h3>
-            </div>
-            <p id="confirmMessage"></p>
-            <div class="form-actions">
-                <button type="button" class="btn-secondary" id="cancelConfirm">Hủy</button>
-                <button type="button" class="btn-primary" id="confirmBtn">Xác Nhận</button>
-            </div>
+    <!-- DANH SÁCH TRUYỆN -->
+    <div id="mangaList" class="manga-list"></div>
+
+    <!-- EMPTY STATE -->
+    <div id="emptyState" class="empty-state" style="display:none;">
+      <h3>📭 Chưa có truyện nào</h3>
+      <p>Hãy thêm truyện đầu tiên của bạn để bắt đầu!</p>
+    </div>
+
+    <!-- LOADING -->
+    <div id="loading" class="loading">
+      <div class="spinner"></div>
+      <p>Đang tải ảnh lên Cloudinary...</p>
+    </div>
+  </div>
+
+  <!-- MODAL THÊM CHƯƠNG -->
+  <div id="chapterModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>➕ Thêm Chương Mới</h2>
+        <p id="mangaNameInModal" style="color: #666; margin-top: 5px;"></p>
+      </div>
+      <form id="chapterForm">
+        <div class="form-group">
+          <label for="chapterName">Tên Chương *</label>
+          <input type="text" id="chapterName" placeholder="VD: Chương 1 - Hành Trình Bắt Đầu" required>
         </div>
+
+        <div class="form-group">
+          <label for="chapterImages">Chọn Ảnh Trang Truyện (Click hoặc Kéo & Thả)</label>
+          <input type="file" id="chapterImages" accept="image/*" multiple required>
+          <small style="color: #999; display: block; margin-top: 5px;">💡 Bạn có thể chọn nhiều ảnh một lúc</small>
+        </div>
+
+        <div id="imagePreview" style="margin: 15px 0;"></div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeChapterModal()">Hủy</button>
+          <button type="submit" class="btn btn-success">💾 Lưu Chương</button>
+        </div>
+      </form>
     </div>
+  </div>
 
-    <!-- Loading Spinner -->
-    <div id="loadingSpinner" class="loading-spinner">
-        <div class="spinner"></div>
-        <p id="loadingText">Đang xử lý...</p>
+  <!-- MODAL XEM CHAPTER -->
+  <div id="viewChapterModal" class="modal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="viewChapterTitle">Xem Chương</h2>
+      </div>
+      <div id="viewChapterContent" style="max-height: 500px; overflow-y: auto;"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn btn-secondary" onclick="closeViewChapterModal()">Đóng</button>
+      </div>
     </div>
+  </div>
 
-    <script>
-        // ==========================================
-        // Cloudinary Configuration
-        // ==========================================
-        const CLOUDINARY_CONFIG = {
-            cloud_name: 'dlys3waqo',
-            api_key: '656516489339242',
-            api_secret: 'mGJwGBnVajLwKbXnVaOJbgBW_Rg',
-            upload_preset: 'manga_upload'
-        };
-
-        // ==========================================
-        // Data Management
-        // ==========================================
-        class MangaDB {
-            constructor() {
-                this.mangas = this.loadFromStorage() || [];
-                this.currentMangaId = null;
-                this.currentChapterId = null;
-            }
-
-            loadFromStorage() {
-                const data = localStorage.getItem('mangaData');
-                return data ? JSON.parse(data) : [];
-            }
-
-            saveToStorage() {
-                localStorage.setItem('mangaData', JSON.stringify(this.mangas));
-            }
-
-            addManga(manga) {
-                manga.id = Date.now();
-                manga.createdAt = new Date().toISOString();
-                manga.chapters = [];
-                manga.favorite = false;
-                manga.readingProgress = 0;
-                this.mangas.push(manga);
-                this.saveToStorage();
-                return manga;
-            }
-
-            updateManga(id, updates) {
-                const manga = this.getManga(id);
-                if (manga) {
-                    Object.assign(manga, updates);
-                    this.saveToStorage();
-                }
-                return manga;
-            }
-
-            deleteManga(id) {
-                this.mangas = this.mangas.filter(m => m.id !== id);
-                this.saveToStorage();
-            }
-
-            getManga(id) {
-                return this.mangas.find(m => m.id === id);
-            }
-
-            getAllMangas() {
-                return this.mangas;
-            }
-
-            addChapter(mangaId, chapter) {
-                const manga = this.getManga(mangaId);
-                if (manga) {
-                    chapter.id = Date.now();
-                    chapter.createdAt = new Date().toISOString();
-                    chapter.pages = chapter.pages || [];
-                    manga.chapters.push(chapter);
-                    this.saveToStorage();
-                    return chapter;
-                }
-                return null;
-            }
-
-            getChapter(mangaId, chapterId) {
-                const manga = this.getManga(mangaId);
-                return manga ? manga.chapters.find(c => c.id === chapterId) : null;
-            }
-
-            updateChapter(mangaId, chapterId, updates) {
-                const chapter = this.getChapter(mangaId, chapterId);
-                if (chapter) {
-                    Object.assign(chapter, updates);
-                    this.saveToStorage();
-                }
-                return chapter;
-            }
-
-            deleteChapter(mangaId, chapterId) {
-                const manga = this.getManga(mangaId);
-                if (manga) {
-                    manga.chapters = manga.chapters.filter(c => c.id !== chapterId);
-                    this.saveToStorage();
-                }
-            }
-
-            getFavorites() {
-                return this.mangas.filter(m => m.favorite);
-            }
-
-            getReading() {
-                return this.mangas.filter(m => m.readingProgress > 0 && m.readingProgress < 100);
-            }
-
-            getCompleted() {
-                return this.mangas.filter(m => m.readingProgress === 100);
-            }
-
-            exportData() {
-                return JSON.stringify(this.mangas, null, 2);
-            }
-
-            importData(jsonData) {
-                try {
-                    const data = JSON.parse(jsonData);
-                    if (Array.isArray(data)) {
-                        this.mangas = data;
-                        this.saveToStorage();
-                        return true;
-                    }
-                } catch (e) {
-                    console.error('Import failed:', e);
-                }
-                return false;
-            }
-        }
-
-        // ==========================================
-        // Cloudinary Upload
-        // ==========================================
-        class CloudinaryUploader {
-            constructor(config) {
-                this.config = config;
-                this.apiUrl = `https://api.cloudinary.com/v1_1/${config.cloud_name}/image/upload`;
-            }
-
-            async uploadImage(file) {
-                const formData = new FormData();
-                formData.append('file', file);
-                formData.append('upload_preset', this.config.upload_preset);
-                formData.append('folder', 'manga-reader');
-
-                try {
-                    const response = await fetch(this.apiUrl, {
-                        method: 'POST',
-                        body: formData
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`Upload failed: ${response.statusText}`);
-                    }
-
-                    const data = await response.json();
-                    return {
-                        url: data.secure_url,
-                        publicId: data.public_id,
-                        width: data.width,
-                        height: data.height
-                    };
-                } catch (error) {
-                    console.error('Cloudinary upload error:', error);
-                    throw error;
-                }
-            }
-
-            async uploadMultipleImages(files) {
-                const uploads = Array.from(files).map(file => this.uploadImage(file));
-                return Promise.all(uploads);
-            }
-        }
-
-        // ==========================================
-        // UI Manager
-        // ==========================================
-        class UIManager {
-            constructor(db, uploader) {
-                this.db = db;
-                this.uploader = uploader;
-                this.currentView = 'home';
-                this.currentSort = 'date';
-                this.currentFilter = 'all';
-                this.currentMode = 'vertical';
-                this.initEventListeners();
-                this.render();
-            }
-
-            initEventListeners() {
-                // Navigation
-                document.querySelectorAll('[data-view]').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        this.switchView(btn.dataset.view);
-                    });
-                });
-
-                // Add Manga
-                document.getElementById('addMangaBtn').addEventListener('click', () => {
-                    this.showAddMangaModal();
-                });
-
-                document.getElementById('addFirstManga').addEventListener('click', () => {
-                    this.showAddMangaModal();
-                });
-
-                document.getElementById('cancelAddManga').addEventListener('click', () => {
-                    this.closeModal('addMangaModal');
-                });
-
-                document.getElementById('addMangaForm').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    this.handleAddManga();
-                });
-
-                // ✅ FIX: Cover Upload Click
-                const coverUploadArea = document.getElementById('coverUploadArea');
-                const coverInput = document.getElementById('coverImage');
-                
-                if (coverUploadArea && coverInput) {
-                    coverUploadArea.addEventListener('click', () => {
-                        coverInput.click();
-                    });
-
-                    coverUploadArea.addEventListener('dragover', (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        coverUploadArea.classList.add('drag-over');
-                    });
-
-                    coverUploadArea.addEventListener('dragleave', (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        coverUploadArea.classList.remove('drag-over');
-                    });
-
-                    coverUploadArea.addEventListener('drop', (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        coverUploadArea.classList.remove('drag-over');
-                        
-                        const files = e.dataTransfer.files;
-                        if (files.length > 0) {
-                            coverInput.files = files;
-                            coverInput.dispatchEvent(new Event('change', { bubbles: true }));
-                        }
-                    });
-
-                    coverInput.addEventListener('change', (e) => {
-                        const file = e.target.files[0];
-                        if (file) {
-                            const reader = new FileReader();
-                            reader.onload = (event) => {
-                                const preview = document.getElementById('coverPreview');
-                                preview.src = event.target.result;
-                                preview.classList.add('show');
-                            };
-                            reader.readAsDataURL(file);
-                        }
-                    });
-                }
-
-                // Tags input
-                document.getElementById('tagInput').addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        this.addTag();
-                    }
-                });
-
-                // Modal closes
-                document.querySelectorAll('.modal-close').forEach(btn => {
-                    btn.addEventListener('click', (e) => {
-                        const modal = btn.closest('.modal');
-                        modal.classList.remove('active');
-                    });
-                });
-
-                // Library controls
-                document.querySelectorAll('.sort-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
-                        this.currentSort = btn.dataset.sort;
-                        this.renderLibrary();
-                    });
-                });
-
-                document.querySelectorAll('.filter-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        this.currentFilter = btn.dataset.filter;
-                        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
-                        this.renderLibrary();
-                    });
-                });
-
-                // Stats
-                document.getElementById('statsBtn').addEventListener('click', () => {
-                    this.switchView('stats');
-                });
-
-                // Export/Import
-                document.getElementById('exportBtn').addEventListener('click', () => {
-                    this.exportData();
-                });
-
-                document.getElementById('importBtn').addEventListener('click', () => {
-                    const input = document.createElement('input');
-                    input.type = 'file';
-                    input.accept = '.json';
-                    input.addEventListener('change', (e) => {
-                        const file = e.target.files[0];
-                        const reader = new FileReader();
-                        reader.onload = (event) => {
-                            const jsonData = event.target.result;
-                            if (this.db.importData(jsonData)) {
-                                alert('Nhập dữ liệu thành công!');
-                                this.render();
-                            } else {
-                                alert('Nhập dữ liệu thất bại!');
-                            }
-                        };
-                        reader.readAsText(file);
-                    });
-                    input.click();
-                });
-
-                // Add Chapter Modal
-                document.getElementById('cancelAddChapter').addEventListener('click', () => {
-                    this.closeModal('addChapterModal');
-                });
-
-                document.getElementById('addChapterForm').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    this.handleAddChapter();
-                });
-
-                // ✅ FIX: Pages Upload Click
-                const pagesUploadArea = document.getElementById('pagesUploadArea');
-                const pagesInput = document.getElementById('pageImages');
-                
-                if (pagesUploadArea && pagesInput) {
-                    pagesUploadArea.addEventListener('click', () => {
-                        pagesInput.click();
-                    });
-
-                    pagesUploadArea.addEventListener('dragover', (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        pagesUploadArea.classList.add('drag-over');
-                    });
-
-                    pagesUploadArea.addEventListener('dragleave', (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        pagesUploadArea.classList.remove('drag-over');
-                    });
-
-                    pagesUploadArea.addEventListener('drop', (e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        pagesUploadArea.classList.remove('drag-over');
-                        
-                        const files = e.dataTransfer.files;
-                        if (files.length > 0) {
-                            pagesInput.files = files;
-                            pagesInput.dispatchEvent(new Event('change', { bubbles: true }));
-                        }
-                    });
-
-                    pagesInput.addEventListener('change', (e) => {
-                        this.displayPagePreviews(e.target.files);
-                    });
-                }
-
-                // Back buttons
-                document.getElementById('backBtn').addEventListener('click', () => {
-                    this.switchView('library');
-                });
-
-                document.getElementById('readerBackBtn').addEventListener('click', () => {
-                    this.switchView('mangaDetail');
-                });
-
-                // Reader controls
-                document.querySelectorAll('.view-btn').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
-                        this.currentMode = btn.dataset.mode;
-                        this.updateReaderMode();
-                    });
-                });
-
-                document.getElementById('prevBtn').addEventListener('click', () => {
-                    this.previousPage();
-                });
-
-                document.getElementById('nextBtn').addEventListener('click', () => {
-                    this.nextPage();
-                });
-
-                // Confirm modal
-                document.getElementById('cancelConfirm').addEventListener('click', () => {
-                    this.closeModal('confirmModal');
-                });
-            }
-
-            switchView(viewName) {
-                document.querySelectorAll('[data-view]').forEach(btn => {
-                    btn.classList.remove('active');
-                });
-
-                document.querySelector(`[data-view="${viewName}"]`)?.classList.add('active');
-
-                document.querySelectorAll('.view').forEach(view => {
-                    view.classList.remove('active');
-                });
-
-                const targetView = document.getElementById(viewName);
-                if (targetView) {
-                    targetView.classList.add('active');
-                    this.currentView = viewName;
-
-                    switch (viewName) {
-                        case 'home':
-                            this.renderHome();
-                            break;
-                        case 'library':
-                            this.renderLibrary();
-                            break;
-                        case 'favorites':
-                            this.renderFavorites();
-                            break;
-                        case 'reading':
-                            this.renderReading();
-                            break;
-                        case 'completed':
-                            this.renderCompleted();
-                            break;
-                        case 'stats':
-                            this.renderStats();
-                            break;
-                    }
-                }
-            }
-
-            renderHome() {
-                this.renderContinueReading();
-                this.renderNewManga();
-                this.renderFavoritesHome();
-                this.updateLibraryCount();
-            }
-
-            renderContinueReading() {
-                const container = document.getElementById('continueReading');
-                const mangas = this.db.getReading().slice(0, 6);
-                container.innerHTML = mangas.length ? '' : '<p style="grid-column: 1/-1; text-align: center; color: #7F8C8D;">Chưa bắt đầu đọc truyện nào</p>';
-                mangas.forEach(manga => {
-                    container.appendChild(this.createMangaCard(manga));
-                });
-            }
-
-            renderNewManga() {
-                const container = document.getElementById('newManga');
-                const mangas = this.db.getAllMangas().sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)).slice(0, 6);
-                container.innerHTML = mangas.length ? '' : '<p style="grid-column: 1/-1; text-align: center; color: #7F8C8D;">Chưa có truyện nào</p>';
-                mangas.forEach(manga => {
-                    container.appendChild(this.createMangaCard(manga));
-                });
-            }
-
-            renderFavoritesHome() {
-                const container = document.getElementById('favorites-home');
-                const noFavorites = document.getElementById('noFavorites');
-                const mangas = this.db.getFavorites().slice(0, 6);
-
-                if (mangas.length === 0) {
-                    container.style.display = 'none';
-                    noFavorites.style.display = 'block';
-                } else {
-                    container.style.display = 'grid';
-                    noFavorites.style.display = 'none';
-                    container.innerHTML = '';
-                    mangas.forEach(manga => {
-                        container.appendChild(this.createMangaCard(manga));
-                    });
-                }
-            }
-
-            renderLibrary() {
-                const container = document.getElementById('libraryContent');
-                const emptyState = document.getElementById('emptyLibrary');
-
-                let mangas = this.db.getAllMangas();
-
-                if (this.currentFilter !== 'all') {
-                    if (this.currentFilter === 'ongoing') {
-                        mangas = mangas.filter(m => m.status === 'Đang Ra');
-                    } else if (this.currentFilter === 'completed') {
-                        mangas = mangas.filter(m => m.status === 'Hoàn Thành');
-                    } else if (this.currentFilter === 'paused') {
-                        mangas = mangas.filter(m => m.status === 'Tạm Ngưng');
-                    } else if (['manga', 'manhwa', 'manhua'].includes(this.currentFilter)) {
-                        const typeMap = {
-                            manga: 'Manga (JP)',
-                            manhwa: 'Manhwa (KR)',
-                            manhua: 'Manhua (CN)'
-                        };
-                        mangas = mangas.filter(m => m.type === typeMap[this.currentFilter]);
-                    }
-                }
-
-                switch (this.currentSort) {
-                    case 'name':
-                        mangas.sort((a, b) => a.name.localeCompare(b.name));
-                        break;
-                    case 'chapters':
-                        mangas.sort((a, b) => b.chapters.length - a.chapters.length);
-                        break;
-                    case 'rating':
-                        mangas.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-                        break;
-                    default:
-                        mangas.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-                }
-
-                if (mangas.length === 0) {
-                    container.style.display = 'none';
-                    emptyState.style.display = 'block';
-                } else {
-                    container.style.display = 'grid';
-                    emptyState.style.display = 'none';
-                    container.innerHTML = '';
-                    mangas.forEach(manga => {
-                        container.appendChild(this.createMangaCard(manga));
-                    });
-                }
-
-                this.updateLibraryCount();
-            }
-
-            renderFavorites() {
-                const container = document.getElementById('favoritesContent');
-                const emptyState = document.getElementById('emptyFavorites');
-                const mangas = this.db.getFavorites();
-
-                if (mangas.length === 0) {
-                    container.style.display = 'none';
-                    emptyState.style.display = 'block';
-                } else {
-                    container.style.display = 'grid';
-                    emptyState.style.display = 'none';
-                    container.innerHTML = '';
-                    mangas.forEach(manga => {
-                        container.appendChild(this.createMangaCard(manga));
-                    });
-                }
-            }
-
-            renderReading() {
-                const container = document.getElementById('readingContent');
-                const emptyState = document.getElementById('emptyReading');
-                const mangas = this.db.getReading();
-
-                if (mangas.length === 0) {
-                    container.style.display = 'none';
-                    emptyState.style.display = 'block';
-                } else {
-                    container.style.display = 'grid';
-                    emptyState.style.display = 'none';
-                    container.innerHTML = '';
-                    mangas.forEach(manga => {
-                        container.appendChild(this.createMangaCard(manga));
-                    });
-                }
-            }
-
-            renderCompleted() {
-                const container = document.getElementById('completedContent');
-                const emptyState = document.getElementById('emptyCompleted');
-                const mangas = this.db.getCompleted();
-
-                if (mangas.length === 0) {
-                    container.style.display = 'none';
-                    emptyState.style.display = 'block';
-                } else {
-                    container.style.display = 'grid';
-                    emptyState.style.display = 'none';
-                    container.innerHTML = '';
-                    mangas.forEach(manga => {
-                        container.appendChild(this.createMangaCard(manga));
-                    });
-                }
-            }
-
-            createMangaCard(manga) {
-                const card = document.createElement('div');
-                card.className = 'manga-card';
-                card.innerHTML = `
-                    <img src="${manga.cover || 'data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22%3E%3C/svg%3E'}" 
-                         class="manga-card-image" 
-                         alt="${manga.name}">
-                    <div class="manga-card-content">
-                        <div class="manga-card-title">${manga.name}</div>
-                        <div class="manga-card-meta">${manga.type}</div>
-                        <div class="manga-card-meta">${manga.chapters.length} chương</div>
-                        <div class="manga-card-actions">
-                            <button class="btn-favorite ${manga.favorite ? 'active' : ''}" data-id="${manga.id}">
-                                ${manga.favorite ? '❤️' : '🤍'}
-                            </button>
-                            <button class="btn-read" data-id="${manga.id}">📖 Đọc</button>
-                        </div>
-                    </div>
-                `;
-
-                card.querySelector('.manga-card-image').addEventListener('click', () => {
-                    this.showMangaDetail(manga.id);
-                });
-
-                card.querySelector('.manga-card-title').addEventListener('click', () => {
-                    this.showMangaDetail(manga.id);
-                });
-
-                const favoriteBtn = card.querySelector('.btn-favorite');
-                favoriteBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    manga.favorite = !manga.favorite;
-                    this.db.updateManga(manga.id, manga);
-                    favoriteBtn.classList.toggle('active');
-                    favoriteBtn.textContent = manga.favorite ? '❤️' : '🤍';
-                    this.updateLibraryCount();
-                });
-
-                const readBtn = card.querySelector('.btn-read');
-                readBtn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    if (manga.chapters.length > 0) {
-                        this.showReader(manga.id, manga.chapters[0].id);
-                    } else {
-                        alert('Truyện này chưa có chương nào');
-                    }
-                });
-
-                return card;
-            }
-
-            showMangaDetail(mangaId) {
-                this.db.currentMangaId = mangaId;
-                const manga = this.db.getManga(mangaId);
-                if (!manga) return;
-
-                const container = document.getElementById('mangaDetailContent');
-                const coverImage = manga.cover ? `<img src="${manga.cover}" alt="${manga.name}">` : 
-                                  `<div style="width: 100%; height: 300px; background: #ECF0F1; display: flex; align-items: center; justify-content: center; border-radius: 0.5rem; font-size: 3rem;">📚</div>`;
-
-                container.innerHTML = `
-                    <div class="manga-detail-cover">
-                        ${coverImage}
-                        <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-                            <button class="btn-primary" onclick="ui.showAddChapterModal(${mangaId})">+ Thêm Chương</button>
-                            <button class="btn-secondary" onclick="ui.editManga(${mangaId})">✏️ Sửa</button>
-                        </div>
-                    </div>
-                    <div style="background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
-                        <div style="display: grid; grid-template-columns: 150px 1fr; gap: 1rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #ECF0F1;">
-                            <div style="font-weight: 600; color: #7F8C8D;">Tên:</div>
-                            <div style="color: #2C3E50;">${manga.name}</div>
-                        </div>
-                        ${manga.alternativeName ? `
-                        <div style="display: grid; grid-template-columns: 150px 1fr; gap: 1rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #ECF0F1;">
-                            <div style="font-weight: 600; color: #7F8C8D;">Tên Khác:</div>
-                            <div style="color: #2C3E50;">${manga.alternativeName}</div>
-                        </div>
-                        ` : ''}
-                        ${manga.author ? `
-                        <div style="display: grid; grid-template-columns: 150px 1fr; gap: 1rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #ECF0F1;">
-                            <div style="font-weight: 600; color: #7F8C8D;">Tác Giả:</div>
-                            <div style="color: #2C3E50;">${manga.author}</div>
-                        </div>
-                        ` : ''}
-                        ${manga.artist ? `
-                        <div style="display: grid; grid-template-columns: 150px 1fr; gap: 1rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #ECF0F1;">
-                            <div style="font-weight: 600; color: #7F8C8D;">Họa Sĩ:</div>
-                            <div style="color: #2C3E50;">${manga.artist}</div>
-                        </div>
-                        ` : ''}
-                        <div style="display: grid; grid-template-columns: 150px 1fr; gap: 1rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #ECF0F1;">
-                            <div style="font-weight: 600; color: #7F8C8D;">Loại:</div>
-                            <div style="color: #2C3E50;">${manga.type}</div>
-                        </div>
-                        <div style="display: grid; grid-template-columns: 150px 1fr; gap: 1rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #ECF0F1;">
-                            <div style="font-weight: 600; color: #7F8C8D;">Tình Trạng:</div>
-                            <div style="color: #2C3E50;">${manga.status}</div>
-                        </div>
-                        ${manga.tags && manga.tags.length > 0 ? `
-                        <div style="display: grid; grid-template-columns: 150px 1fr; gap: 1rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid #ECF0F1;">
-                            <div style="font-weight: 600; color: #7F8C8D;">Tags:</div>
-                            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-                                ${manga.tags.map(tag => `<span style="background: #4ECDC4; color: white; padding: 0.5rem 1rem; border-radius: 1rem; font-size: 0.85rem;">${tag}</span>`).join('')}
-                            </div>
-                        </div>
-                        ` : ''}
-                        ${manga.description ? `
-                        <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #ECF0F1;">
-                            <div style="font-weight: 600; color: #7F8C8D; margin-bottom: 0.5rem;">Mô Tả:</div>
-                            <div style="color: #2C3E50;">${manga.description}</div>
-                        </div>
-                        ` : ''}
-                        <h3 style="margin-top: 2rem;">📋 Danh Sách Chương</h3>
-                        <div id="chaptersContainer"></div>
-                    </div>
-                `;
-
-                const chaptersContainer = document.getElementById('chaptersContainer');
-                if (manga.chapters.length === 0) {
-                    chaptersContainer.innerHTML = '<p style="text-align: center; color: #7F8C8D;">Chưa có chương nào</p>';
-                } else {
-                    const sortedChapters = [...manga.chapters].sort((a, b) => {
-                        const numA = parseFloat(a.number) || 0;
-                        const numB = parseFloat(b.number) || 0;
-                        return numB - numA;
-                    });
-
-                    const list = document.createElement('div');
-                    list.style.cssText = 'background: white; border-radius: 0.5rem; overflow: hidden; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);';
-
-                    sortedChapters.forEach(chapter => {
-                        const item = document.createElement('div');
-                        item.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; border-bottom: 1px solid #ECF0F1; cursor: pointer; transition: all 0.3s ease;';
-                        
-                        const date = new Date(chapter.createdAt).toLocaleDateString('vi-VN');
-                        const pageCount = chapter.pages ? chapter.pages.length : 0;
-
-                        item.innerHTML = `
-                            <div style="flex: 1;">
-                                <div style="font-weight: 600; color: #2C3E50;">Chương ${chapter.number}${chapter.name ? ` - ${chapter.name}` : ''}</div>
-                                <div style="font-size: 0.85rem; color: #7F8C8D; margin-top: 0.25rem;">${pageCount} trang • ${date}</div>
-                            </div>
-                            <div style="display: flex; gap: 0.5rem;">
-                                <button class="read-btn" data-chapter-id="${chapter.id}" style="padding: 0.5rem 1rem; border: none; background: #4ECDC4; color: white; border-radius: 0.25rem; cursor: pointer; font-size: 0.85rem;">📖 Đọc</button>
-                                <button class="delete-btn" data-chapter-id="${chapter.id}" style="padding: 0.5rem 1rem; border: none; background: #ECF0F1; color: #2C3E50; border-radius: 0.25rem; cursor: pointer; font-size: 0.85rem;">🗑️ Xóa</button>
-                            </div>
-                        `;
-
-                        item.querySelector('.read-btn').addEventListener('click', () => {
-                            this.showReader(manga.id, chapter.id);
-                        });
-
-                        item.querySelector('.delete-btn').addEventListener('click', () => {
-                            this.confirmDelete(`Xóa chương ${chapter.number}?`, () => {
-                                this.db.deleteChapter(manga.id, chapter.id);
-                                this.showMangaDetail(manga.id);
-                            });
-                        });
-
-                        list.appendChild(item);
-                    });
-
-                    chaptersContainer.appendChild(list);
-                }
-
-                this.switchView('mangaDetail');
-            }
-
-            showAddChapterModal(mangaId) {
-                this.db.currentMangaId = mangaId;
-                document.getElementById('addChapterForm').reset();
-                document.getElementById('pagesList').innerHTML = '';
-                this.openModal('addChapterModal');
-            }
-
-            displayPagePreviews(files) {
-                const pagesList = document.getElementById('pagesList');
-                pagesList.innerHTML = '';
-
-                if (!files || files.length === 0) return;
-
-                Array.from(files).forEach((file, index) => {
-                    if (file.size > 50 * 1024 * 1024) {
-                        alert(`File ${file.name} quá lớn (tối đa 50MB)`);
-                        return;
-                    }
-
-                    if (!file.type.startsWith('image/')) {
-                        alert(`File ${file.name} không phải ảnh`);
-                        return;
-                    }
-
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        const item = document.createElement('div');
-                        item.className = 'page-item';
-                        item.innerHTML = `
-                            <img src="${e.target.result}" alt="Page ${index + 1}">
-                            <div class="page-item-number">${index + 1}</div>
-                            <button type="button" class="page-item-remove" data-index="${index}">✕</button>
-                        `;
-
-                        item.querySelector('.page-item-remove').addEventListener('click', (evt) => {
-                            evt.preventDefault();
-                            evt.stopPropagation();
-                            item.remove();
-                        });
-
-                        pagesList.appendChild(item);
-                    };
-                    reader.readAsDataURL(file);
-                });
-            }
-
-            async handleAddChapter() {
-                this.showLoading(true, 'Đang tải ảnh lên Cloudinary...');
-
-                try {
-                    const mangaId = this.db.currentMangaId;
-                    const chapterNumber = document.getElementById('chapterNumber').value;
-                    const chapterName = document.getElementById('chapterName').value;
-                    const pageFiles = document.getElementById('pageImages').files;
-
-                    if (!mangaId || !chapterNumber) {
-                        alert('Vui lòng điền đầy đủ thông tin');
-                        return;
-                    }
-
-                    let pages = [];
-
-                    if (pageFiles.length > 0) {
-                        const uploadedImages = await this.uploader.uploadMultipleImages(pageFiles);
-                        pages = uploadedImages.map((img, index) => ({
-                            number: index + 1,
-                            url: img.url,
-                            publicId: img.publicId
-                        }));
-                    }
-
-                    const chapter = {
-                        number: parseFloat(chapterNumber),
-                        name: chapterName,
-                        pages: pages
-                    };
-
-                    this.db.addChapter(mangaId, chapter);
-                    this.closeModal('addChapterModal');
-                    this.showMangaDetail(mangaId);
-                    alert('Thêm chương thành công!');
-                } catch (error) {
-                    console.error('Error adding chapter:', error);
-                    alert('Lỗi: ' + error.message);
-                } finally {
-                    this.showLoading(false);
-                }
-            }
-
-            showReader(mangaId, chapterId) {
-                const manga = this.db.getManga(mangaId);
-                const chapter = manga ? this.db.getChapter(mangaId, chapterId) : null;
-
-                if (!chapter) {
-                    alert('Không tìm thấy chương');
-                    return;
-                }
-
-                this.db.currentMangaId = mangaId;
-                this.db.currentChapterId = chapterId;
-
-                if (manga.readingProgress === undefined) {
-                    manga.readingProgress = 0;
-                }
-                manga.readingProgress = Math.min(100, (manga.chapters.indexOf(chapter) + 1) / manga.chapters.length * 100);
-                this.db.updateManga(mangaId, manga);
-
-                this.renderReader();
-                this.switchView('reader');
-            }
-
-            renderReader() {
-                const manga = this.db.getManga(this.db.currentMangaId);
-                const chapter = this.db.getChapter(this.db.currentMangaId, this.db.currentChapterId);
-
-                if (!manga || !chapter) return;
-
-                const readerInfo = document.querySelector('.reader-info');
-                const currentChapterIndex = manga.chapters.findIndex(c => c.id === chapter.id);
-
-                readerInfo.innerHTML = `
-                    <p><strong>${manga.name}</strong></p>
-                    <p>Chương ${chapter.number} ${chapter.name ? `- ${chapter.name}` : ''}</p>
-                `;
-
-                const readerContent = document.querySelector('.reader-content');
-                readerContent.innerHTML = '';
-                readerContent.className = `reader-content ${this.currentMode}`;
-
-                const pages = chapter.pages || [];
-                pages.forEach((page, index) => {
-                    const img = document.createElement('img');
-                    img.src = page.url;
-                    img.alt = `Page ${page.number}`;
-                    readerContent.appendChild(img);
-                });
-
-                const pageInfo = document.querySelector('.page-info');
-                pageInfo.textContent = `${currentChapterIndex + 1}/${manga.chapters.length}`;
-
-                document.getElementById('prevBtn').disabled = currentChapterIndex === 0;
-                document.getElementById('nextBtn').disabled = currentChapterIndex === manga.chapters.length - 1;
-            }
-
-            previousPage() {
-                const manga = this.db.getManga(this.db.currentMangaId);
-                const currentIndex = manga.chapters.findIndex(c => c.id === this.db.currentChapterId);
-
-                if (currentIndex > 0) {
-                    this.showReader(this.db.currentMangaId, manga.chapters[currentIndex - 1].id);
-                }
-            }
-
-            nextPage() {
-                const manga = this.db.getManga(this.db.currentMangaId);
-                const currentIndex = manga.chapters.findIndex(c => c.id === this.db.currentChapterId);
-
-                if (currentIndex < manga.chapters.length - 1) {
-                    this.showReader(this.db.currentMangaId, manga.chapters[currentIndex + 1].id);
-                }
-            }
-
-            updateReaderMode() {
-                const readerContent = document.querySelector('.reader-content');
-                readerContent.className = `reader-content ${this.currentMode}`;
-            }
-
-            showAddMangaModal() {
-                document.getElementById('addMangaForm').reset();
-                document.getElementById('tagsList').innerHTML = '';
-                document.getElementById('coverPreview').classList.remove('show');
-                this.openModal('addMangaModal');
-            }
-
-            addTag() {
-                const input = document.getElementById('tagInput');
-                const tag = input.value.trim();
-
-                if (!tag) return;
-
-                const tagsList = document.getElementById('tagsList');
-                const existingTags = Array.from(tagsList.querySelectorAll('.tag')).map(t => t.textContent.trim());
-
-                if (existingTags.includes(tag)) {
-                    alert('Tag này đã tồn tại');
-                    return;
-                }
-
-                const tagElement = document.createElement('span');
-                tagElement.className = 'tag';
-                tagElement.innerHTML = `
-                    ${tag}
-                    <button type="button">✕</button>
-                `;
-
-                tagElement.querySelector('button').addEventListener('click', (e) => {
-                    e.preventDefault();
-                    tagElement.remove();
-                });
-
-                tagsList.appendChild(tagElement);
-                input.value = '';
-            }
-
-            async handleAddManga() {
-                this.showLoading(true, 'Đang xử lý...');
-
-                try {
-                    const name = document.getElementById('mangaName').value;
-                    const alternativeName = document.getElementById('alternativeName').value;
-                    const author = document.getElementById('author').value;
-                    const artist = document.getElementById('artist').value;
-                    const type = document.getElementById('type').value;
-                    const status = document.getElementById('status').value;
-                    const description = document.getElementById('description').value;
-                    const coverFile = document.getElementById('coverImage').files[0];
-
-                    if (!name) {
-                        alert('Vui lòng nhập tên truyện');
-                        return;
-                    }
-
-                    const tags = Array.from(document.getElementById('tagsList').querySelectorAll('.tag')).map(t => t.textContent.trim());
-
-                    let coverUrl = null;
-                    if (coverFile) {
-                        this.showLoading(true, 'Đang tải ảnh bìa...');
-                        const uploadedCover = await this.uploader.uploadImage(coverFile);
-                        coverUrl = uploadedCover.url;
-                    }
-
-                    const manga = {
-                        name,
-                        alternativeName,
-                        author,
-                        artist,
-                        type,
-                        status,
-                        description,
-                        cover: coverUrl,
-                        tags
-                    };
-
-                    this.db.addManga(manga);
-                    this.closeModal('addMangaModal');
-                    this.render();
-                    alert('Thêm truyện thành công!');
-                } catch (error) {
-                    console.error('Error adding manga:', error);
-                    alert('Lỗi: ' + error.message);
-                } finally {
-                    this.showLoading(false);
-                }
-            }
-
-            editManga(mangaId) {
-                alert('Chức năng sửa sẽ được triển khai');
-            }
-
-            renderStats() {
-                const container = document.getElementById('statsContent');
-                const allMangas = this.db.getAllMangas();
-                const totalChapters = allMangas.reduce((sum, m) => sum + m.chapters.length, 0);
-                const favorites = this.db.getFavorites().length;
-                const reading = this.db.getReading().length;
-                const completed = this.db.getCompleted().length;
-
-                const tagCounts = {};
-                allMangas.forEach(manga => {
-                    (manga.tags || []).forEach(tag => {
-                        tagCounts[tag] = (tagCounts[tag] || 0) + 1;
-                    });
-                });
-
-                const sortedTags = Object.entries(tagCounts)
-                    .sort((a, b) => b[1] - a[1])
-                    .slice(0, 10);
-
-                container.innerHTML = `
-                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
-                        <div style="background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
-                            <h3 style="color: #7F8C8D; font-size: 0.9rem; margin-bottom: 0.5rem;">Tổng Truyện</h3>
-                            <div style="font-size: 2.5rem; font-weight: 700; color: #FF6B6B;">${allMangas.length}</div>
-                        </div>
-                        <div style="background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
-                            <h3 style="color: #7F8C8D; font-size: 0.9rem; margin-bottom: 0.5rem;">Tổng Chương</h3>
-                            <div style="font-size: 2.5rem; font-weight: 700; color: #FF6B6B;">${totalChapters}</div>
-                        </div>
-                        <div style="background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
-                            <h3 style="color: #7F8C8D; font-size: 0.9rem; margin-bottom: 0.5rem;">Yêu Thích</h3>
-                            <div style="font-size: 2.5rem; font-weight: 700; color: #FF6B6B;">${favorites}</div>
-                        </div>
-                        <div style="background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
-                            <h3 style="color: #7F8C8D; font-size: 0.9rem; margin-bottom: 0.5rem;">Đang Đọc</h3>
-                            <div style="font-size: 2.5rem; font-weight: 700; color: #FF6B6B;">${reading}</div>
-                        </div>
-                        <div style="background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
-                            <h3 style="color: #7F8C8D; font-size: 0.9rem; margin-bottom: 0.5rem;">Đã Hoàn Thành</h3>
-                            <div style="font-size: 2.5rem; font-weight: 700; color: #FF6B6B;">${completed}</div>
-                        </div>
-                    </div>
-
-                    ${sortedTags.length > 0 ? `
-                    <div style="background: white; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);">
-                        <h3>🏷️ Tags Phổ Biến</h3>
-                        <div style="display: flex; flex-wrap: wrap; gap: 1rem;">
-                            ${sortedTags.map(([tag, count]) => `
-                                <div style="display: flex; flex-direction: column; align-items: center; text-align: center;">
-                                    <span style="font-weight: 600; color: #2C3E50;">${tag}</span>
-                                    <span style="font-size: 0.85rem; color: #7F8C8D;">${count}</span>
-                                </div>
-                            `).join('')}
-                        </div>
-                    </div>
-                    ` : ''}
-                `;
-            }
-
-            exportData() {
-                const data = this.db.exportData();
-                const blob = new Blob([data], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `manga-data-${new Date().toISOString().split('T')[0]}.json`;
-                a.click();
-                URL.revokeObjectURL(url);
-            }
-
-            confirmDelete(message, callback) {
-                const modal = document.getElementById('confirmModal');
-                document.getElementById('confirmMessage').textContent = message;
-
-                const confirmBtn = document.getElementById('confirmBtn');
-                const newConfirmBtn = confirmBtn.cloneNode(true);
-                confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
-
-                newConfirmBtn.addEventListener('click', () => {
-                    callback();
-                    this.closeModal('confirmModal');
-                });
-
-                this.openModal('confirmModal');
-            }
-
-            openModal(modalId) {
-                document.getElementById(modalId).classList.add('active');
-            }
-
-            closeModal(modalId) {
-                document.getElementById(modalId).classList.remove('active');
-            }
-
-            showLoading(show, text = 'Đang xử lý...') {
-                const spinner = document.getElementById('loadingSpinner');
-                const loadingText = document.getElementById('loadingText');
-                if (show) {
-                    spinner.classList.add('active');
-                    loadingText.textContent = text;
-                } else {
-                    spinner.classList.remove('active');
-                }
-            }
-
-            updateLibraryCount() {
-                const count = this.db.getAllMangas().length;
-                document.querySelector('[data-view="library"] .count').textContent = `(${count})`;
-            }
-
-            render() {
-                this.renderHome();
-                this.updateLibraryCount();
-            }
-        }
-
-        // ==========================================
-        // Initialize App
-        // ==========================================
-        let db, uploader, ui;
-
-        document.addEventListener('DOMContentLoaded', () => {
-            db = new MangaDB();
-            uploader = new CloudinaryUploader(CLOUDINARY_CONFIG);
-            ui = new UIManager(db, uploader);
-            
-            console.log('MangaVault initialized successfully');
-            console.log('Cloudinary configured:', CLOUDINARY_CONFIG.cloud_name);
-        });
-    </script>
-
-    <!-- Additional CSS for Reader -->
-    <style>
-        #reader {
-            padding: 0;
-            background: #000;
-            color: white;
-        }
-
-        .reader-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem;
-            background: rgba(0, 0, 0, 0.8);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .reader-header .btn-back {
-            color: white;
-        }
-
-        .reader-info {
-            color: white;
-        }
-
-        .reader-info p {
-            margin: 0;
-            font-size: 0.9rem;
-        }
-
-        .reader-container {
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start;
-            padding: 1rem;
-        }
-
-        .reader-content {
-            max-width: 600px;
-            width: 100%;
-        }
-
-        .reader-content img {
-            width: 100%;
-            display: block;
-            margin-bottom: 1rem;
-        }
-
-        .reader-content.horizontal {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .reader-content.horizontal img {
-            flex: 1;
-            max-width: 50%;
-            margin-bottom: 0;
-        }
-
-        .reader-content.rtl {
-            direction: rtl;
-        }
-
-        .reader-controls {
-            padding: 1rem;
-            background: rgba(0, 0, 0, 0.8);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .view-mode {
-            display: flex;
-            gap: 0.5rem;
-        }
-
-        .view-btn {
-            padding: 0.5rem 1rem;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            background: transparent;
-            color: white;
-            border-radius: 0.25rem;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: all 0.3s ease;
-        }
-
-        .view-btn.active {
-            background: #FF6B6B;
-            border-color: #FF6B6B;
-        }
-
-        .view-btn:hover {
-            border-color: #FF6B6B;
-        }
-
-        .navigation {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .nav-btn {
-            padding: 0.5rem 1rem;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            background: transparent;
-            color: white;
-            border-radius: 0.25rem;
-            cursor: pointer;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-        }
-
-        .nav-btn:hover:not(:disabled) {
-            background: #FF6B6B;
-            border-color: #FF6B6B;
-        }
-
-        .nav-btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .page-info {
-            font-size: 0.9rem;
-            white-space: nowrap;
-        }
-    </style>
+  <script src="app.js"></script>
 </body>
 </html>
