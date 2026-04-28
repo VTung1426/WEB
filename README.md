@@ -22,12 +22,6 @@ Web đọc truyện tranh online với giao diện đẹp, upload ảnh lên **C
 4. Chuyển tab **Thêm chapter** → chọn truyện → upload các trang ảnh
 5. Về trang chủ và đọc!
 
-## ☁️ Cloudinary
-
-| Thông tin | Giá trị |
-|-----------|---------|
-| Cloud Name | `dlys3waqo` |
-| Upload Preset | `manga_upload` |
 
 Ảnh được lưu trong folder `mangaverse/` trên Cloudinary.
 
