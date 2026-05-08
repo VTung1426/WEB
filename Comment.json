@@ -1,0 +1,27 @@
+{
+  "name": "Comment",
+  "type": "object",
+  "properties": {
+    "story_id": {
+      "type": "string",
+      "description": "ID truy\u1ec7n"
+    },
+    "user_email": {
+      "type": "string",
+      "description": "Email ng\u01b0\u1eddi b\u00ecnh lu\u1eadn"
+    },
+    "user_name": {
+      "type": "string",
+      "description": "T\u00ean ng\u01b0\u1eddi b\u00ecnh lu\u1eadn"
+    },
+    "content": {
+      "type": "string",
+      "description": "N\u1ed9i dung b\u00ecnh lu\u1eadn"
+    }
+  },
+  "required": [
+    "story_id",
+    "user_email",
+    "content"
+  ]
+}
