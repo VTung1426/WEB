@@ -1,0 +1,62 @@
+{
+  "name": "Story",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "description": "T\u00ean truy\u1ec7n"
+    },
+    "author": {
+      "type": "string",
+      "description": "T\u00e1c gi\u1ea3"
+    },
+    "cover_image": {
+      "type": "string",
+      "description": "URL \u1ea3nh b\u00eca"
+    },
+    "description": {
+      "type": "string",
+      "description": "M\u00f4 t\u1ea3 truy\u1ec7n"
+    },
+    "genre": {
+      "type": "string",
+      "enum": [
+        "ti\u00ean_hi\u1ec7p",
+        "ki\u1ebfm_hi\u1ec7p",
+        "ng\u00f4n_t\u00ecnh",
+        "\u0111\u00f4_th\u1ecb",
+        "huy\u1ec1n_huy\u1ec5n",
+        "khoa_huy\u1ec5n",
+        "trinh_th\u00e1m",
+        "l\u1ecbch_s\u1eed",
+        "kinh_d\u1ecb",
+        "kh\u00e1c"
+      ],
+      "description": "Th\u1ec3 lo\u1ea1i"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "\u0111ang_ra",
+        "ho\u00e0n_th\u00e0nh",
+        "t\u1ea1m_ng\u01b0ng"
+      ],
+      "default": "\u0111ang_ra",
+      "description": "Tr\u1ea1ng th\u00e1i"
+    },
+    "view_count": {
+      "type": "number",
+      "default": 0,
+      "description": "L\u01b0\u1ee3t xem"
+    },
+    "chapter_count": {
+      "type": "number",
+      "default": 0,
+      "description": "S\u1ed1 ch\u01b0\u01a1ng"
+    }
+  },
+  "required": [
+    "title",
+    "author"
+  ]
+}
