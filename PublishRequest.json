@@ -1,0 +1,57 @@
+{
+  "name": "PublishRequest",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email ng\u01b0\u1eddi g\u1eedi y\u00eau c\u1ea7u"
+    },
+    "user_name": {
+      "type": "string",
+      "description": "T\u00ean ng\u01b0\u1eddi g\u1eedi"
+    },
+    "story_title": {
+      "type": "string",
+      "description": "T\u00ean truy\u1ec7n mu\u1ed1n \u0111\u0103ng"
+    },
+    "story_author": {
+      "type": "string",
+      "description": "T\u00ean t\u00e1c gi\u1ea3"
+    },
+    "story_genre": {
+      "type": "string",
+      "description": "Th\u1ec3 lo\u1ea1i"
+    },
+    "story_status": {
+      "type": "string",
+      "description": "Tr\u1ea1ng th\u00e1i truy\u1ec7n"
+    },
+    "story_description": {
+      "type": "string",
+      "description": "M\u00f4 t\u1ea3 truy\u1ec7n"
+    },
+    "cover_image": {
+      "type": "string",
+      "description": "URL \u1ea3nh b\u00eca"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending",
+      "description": "Tr\u1ea1ng th\u00e1i x\u00e9t duy\u1ec7t"
+    },
+    "admin_note": {
+      "type": "string",
+      "description": "Ghi ch\u00fa c\u1ee7a admin"
+    }
+  },
+  "required": [
+    "user_email",
+    "story_title",
+    "story_author"
+  ]
+}
